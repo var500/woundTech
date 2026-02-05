@@ -86,7 +86,7 @@ export class VisitsService {
     const clinician = await this.clinicianModel.findByPk(clinician_id);
     if (!clinician) throw new BadRequestException('Clinician not found');
 
-    const visitDate = new Date(scheduled_at);
+    const visitDate = new Date(Number(scheduled_at));
     const visitDurationMs = 30 * 60 * 1000;
 
     /*
