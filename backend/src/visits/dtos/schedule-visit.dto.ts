@@ -6,4 +6,6 @@ export class ScheduleVisitDTO {
   clinician_id: string;
   @ApiProperty()
   scheduled_at: string;
+  @ApiProperty()
+  notes?: string;
 }

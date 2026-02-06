@@ -5,6 +5,8 @@ enum Method {
   Delete = 'DELETE',
 }
 export const ignorePath: { [key: string]: { methods: Method[] } } = {
+  // status check
+  '/': { methods: [Method.Get] },
   // clinitian paths
   '/clinician': { methods: [Method.Put, Method.Post] },
   '/clinician/login': { methods: [Method.Post] },

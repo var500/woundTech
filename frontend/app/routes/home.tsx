@@ -1,5 +1,8 @@
+import { LoginView } from "~/LoginView";
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { useAuth } from "~/utils/useAuth";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -9,5 +12,22 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <Welcome />;
+  const navigate = useNavigate();
+  const { user: authUser, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated && authUser?.role) {
+      if (authUser.role === "clinician") {
+        navigate("/clinician");
+      } else if (authUser.role === "patient") {
+        navigate("/patient");
+      }
+    }
+  }, [isAuthenticated, authUser, navigate]);
+
+  if (isAuthenticated) {
+    return <div>Loading...</div>;
+  }
+
+  return <LoginView />;
 }

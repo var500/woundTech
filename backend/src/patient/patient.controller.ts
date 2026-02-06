@@ -14,7 +14,7 @@ import { Patient } from 'src/models/patients.schema';
 export class PatientController {
   constructor(private readonly patientService: PatientService) {}
 
-  @Roles(RoleCategories.onlyPatient)
+  @Roles(RoleCategories.ClinicianAndPatient)
   @Get('/')
   async getList() {
     return await this.patientService.getList();
@@ -30,7 +30,7 @@ export class PatientController {
     return this.patientService.login(body);
   }
 
-  @Roles(RoleCategories.onlyPatient)
+  @Roles(RoleCategories.ClinicianAndPatient)
   @ApiQuery({ name: 'email', required: false })
   @ApiQuery({ name: 'id', required: false })
   @Get('/detail')
