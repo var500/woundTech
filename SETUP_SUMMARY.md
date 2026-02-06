@@ -4,7 +4,7 @@
 
 #### Environment Setup:
 
-Your `.env` file already has:
+`.env` file already has:
 
 ```
 
