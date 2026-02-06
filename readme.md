@@ -33,7 +33,7 @@ npm run dev
 
 - **Backend**: NestJS, Node.js
 - **Frontend**: React, React Router
-- **Database**: [Add your database]
+- **Database**: neondb
 
 ## Project Structure
 
