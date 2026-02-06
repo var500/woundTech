@@ -13,20 +13,21 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   const navigate = useNavigate();
-  const { user: authUser, isAuthenticated } = useAuth();
+  const { user: authUser, isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
-    if (isAuthenticated && authUser?.role) {
-      if (authUser.role === "clinician") {
-        navigate("/clinician");
-      } else if (authUser.role === "patient") {
-        navigate("/patient");
-      }
+    if (!isLoading && isAuthenticated && authUser?.role) {
+      const target = authUser.role === "clinician" ? "/clinician" : "/patient";
+      navigate(target, { replace: true });
     }
-  }, [isAuthenticated, authUser, navigate]);
+  }, [isAuthenticated, authUser, navigate, isLoading]);
 
-  if (isAuthenticated) {
-    return <div>Loading...</div>;
+  if (isLoading || isAuthenticated) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        Loading...
+      </div>
+    );
   }
 
   return <LoginView />;

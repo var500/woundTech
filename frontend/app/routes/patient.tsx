@@ -2,6 +2,8 @@ import { DashboardLayout } from "~/layout/DashboardLayout";
 import type { Route } from "./+types/patient";
 import { Patient } from "~/components/patient";
 import { useAuth } from "~/utils/useAuth";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -11,7 +13,16 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function PatientRoute() {
-  const { error } = useAuth();
+  const { error, isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated, isLoading, navigate]);
+
+  if (isLoading) return <div>Loading Profile...</div>;
+
   return (
     <DashboardLayout>
       {error && (

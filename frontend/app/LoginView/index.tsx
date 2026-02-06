@@ -5,22 +5,19 @@ import { Activity } from "lucide-react";
 import { useAuth } from "~/utils/useAuth";
 import { Select } from "~/components/select";
 import { useNavigate } from "react-router";
+import { RegisterForm } from "~/components/Forms/registerForm";
 export const LoginView = () => {
   let navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("clinician");
   const [isRegistering, setIsRegistering] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [error, setError] = useState(null);
   const {
     isLoading: authLoading,
     error: authError,
     clinicianLogin,
     patientLogin,
-    clinicianRegister,
-    patientRegister,
   } = useAuth();
 
   const handleLogin = async (e: any) => {
@@ -35,19 +32,6 @@ export const LoginView = () => {
       }
     } catch (err) {
       console.error("Login error:", err);
-    }
-  };
-
-  const handleRegister = async (e: any) => {
-    e.preventDefault();
-    try {
-      if (userType === "clinician") {
-        await clinicianRegister({ email, password, firstName, lastName });
-      } else {
-        await patientRegister({ email, password, firstName, lastName });
-      }
-    } catch (err) {
-      console.error("Registration error:", err);
     }
   };
 
@@ -73,8 +57,9 @@ export const LoginView = () => {
             <button
               onClick={() => {
                 setIsRegistering(false);
-                setFirstName("");
-                setLastName("");
+                setEmail("");
+                setPassword("");
+                setError(null);
               }}
               className={`flex-1 py-2 text-sm font-medium border-b-2 transition-colors ${
                 !isRegistering
@@ -109,53 +94,14 @@ export const LoginView = () => {
           />
 
           {isRegistering ? (
-            <form onSubmit={handleRegister}>
-              <Input
-                label="First Name"
-                value={firstName}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setFirstName(e.target.value)
-                }
-                placeholder="First name"
-                required
-              />
-              <Input
-                label="Last Name"
-                value={lastName}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setLastName(e.target.value)
-                }
-                placeholder="Last name"
-                required
-              />
-              <Input
-                label="Email Address"
-                type="email"
-                value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEmail(e.target.value)
-                }
-                placeholder="Enter your email"
-                required
-              />
-              <Input
-                label="Password"
-                type="password"
-                value={password}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setPassword(e.target.value)
-                }
-                placeholder="Enter your password"
-                required
-              />
-              <Button
-                type="submit"
-                className="w-full mt-6"
-                disabled={authLoading}
-              >
-                {authLoading ? "Creating Account..." : "Create Account"}
-              </Button>
-            </form>
+            <RegisterForm
+              handleSetIsRegistering={setIsRegistering}
+              userType={userType}
+              email={email}
+              password={password}
+              setEmail={setEmail}
+              setPassword={setPassword}
+            />
           ) : (
             <form onSubmit={handleLogin}>
               <Input

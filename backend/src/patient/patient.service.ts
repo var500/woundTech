@@ -29,7 +29,7 @@ export class PatientService {
       });
 
       if (!patient) {
-        throw new BadRequestException(Messages.Login_Failed);
+        throw new BadRequestException(Messages.User_Not_Found);
       }
 
       const isMatch = await verifyHash(patient.password, data.password);

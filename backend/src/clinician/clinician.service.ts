@@ -30,7 +30,7 @@ export class ClinicianService {
       });
 
       if (!clinician) {
-        throw new BadRequestException(Messages.Login_Failed);
+        throw new BadRequestException(Messages.User_Not_Found);
       }
 
       const isMatch = await verifyHash(clinician.password, data.password);

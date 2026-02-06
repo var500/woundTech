@@ -24,7 +24,7 @@ interface UseAuthReturn {
  */
 export const useAuth = (): UseAuthReturn => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   // Initialize auth state from localStorage
@@ -33,6 +33,7 @@ export const useAuth = (): UseAuthReturn => {
     if (storedUser) {
       setUser(storedUser);
     }
+    setIsLoading(false);
   }, []);
 
   const clinicianLogin = useCallback(async (credentials: LoginRequest) => {

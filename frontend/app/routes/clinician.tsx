@@ -1,7 +1,9 @@
 import { DashboardLayout } from "~/layout/DashboardLayout";
 import type { Route } from "./+types/clinician";
 import { Clinician } from "~/components/clinician";
-import { useAuth } from "~/utils/api";
+import { useAuth } from "~/utils/useAuth";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -11,7 +13,17 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function ClinicianRoute() {
-  const { error } = useAuth();
+  const { error, isAuthenticated, isLoading } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    // Only redirect if loading is finished AND user is not auth
+    if (!isLoading && !isAuthenticated) {
+      navigate("/", { replace: true });
+    }
+  }, [isAuthenticated, isLoading, navigate]);
+
+  if (isLoading) return <div>Loading Profile...</div>;
+
   return (
     <DashboardLayout>
       {error && (
