@@ -16,6 +16,12 @@ A modern, production-ready template for building full-stack React applications u
 
 ## Getting Started
 
+### Create env file
+
+```bash
+cp .env.example .env
+```
+
 ### Installation
 
 Install the dependencies:

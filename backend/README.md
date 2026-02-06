@@ -27,9 +27,17 @@
 
 ## Project setup
 
-```bash
-$ pnpm install
-```
+1. Create a env file
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Install dependenciese
+
+   ```bash
+   $ pnpm install
+   ```
 
 ## Compile and run the project
 
