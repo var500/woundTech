@@ -13,10 +13,10 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function PatientRoute() {
-  const { error, isAuthenticated, isLoading } = useAuth();
+  const { error, isAuthenticated, isLoading, user } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (!isLoading && (!isAuthenticated || !user?.role?.includes("patient"))) {
       navigate("/", { replace: true });
     }
   }, [isAuthenticated, isLoading, navigate]);

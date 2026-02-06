@@ -13,11 +13,14 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function ClinicianRoute() {
-  const { error, isAuthenticated, isLoading } = useAuth();
+  const { error, isAuthenticated, isLoading, user } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
     // Only redirect if loading is finished AND user is not auth
-    if (!isLoading && !isAuthenticated) {
+    if (
+      !isLoading &&
+      (!isAuthenticated || !user?.role?.includes("clinician"))
+    ) {
       navigate("/", { replace: true });
     }
   }, [isAuthenticated, isLoading, navigate]);
