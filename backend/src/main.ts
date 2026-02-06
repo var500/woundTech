@@ -17,9 +17,10 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('default')
     .addBearerAuth(
-      { type: 'http', scheme: 'Bearer', bearerFormat: 'JWT' },
-      'Authorization',
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'bearer',
     )
+    .addSecurityRequirements('bearer')
     .build();
   const corsOptions: CorsOptions = {
     origin: '*',

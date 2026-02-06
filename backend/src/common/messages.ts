@@ -11,7 +11,7 @@ export const Messages = {
   Visits_Not_Found: 'No visits found for this user',
   Visit_fetch_failed: 'Failed to fetch visit. Please try again later.',
   Visit_already_exists:
-    'Clinician already has a visit scheduled with this patient on this date.',
+    'You already have a visit scheduled with this patient on this date.',
   Visit_overlapping:
     'Patient has a conflicting appointment within the 30-minute window.',
   Visit_Not_In_Progress: 'Visit must be IN_PROGRESS to check out',

@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 import { Register_USER_DTO } from './dtos/register.dtos';
 import { Login_USER_DTO } from './dtos/login.dtos';
@@ -13,6 +13,7 @@ import { Roles } from 'src/guards/roles';
 export class ClinicianController {
   constructor(private readonly clinicianService: ClinicianService) {}
 
+  @ApiBearerAuth('bearer')
   @Roles(RoleCategories.onlyClinician)
   @Get('/')
   async getList() {
@@ -29,6 +30,7 @@ export class ClinicianController {
     return this.clinicianService.login(body);
   }
 
+  @ApiBearerAuth('bearer')
   @Roles(RoleCategories.onlyClinician)
   @ApiQuery({ name: 'email', required: false })
   @ApiQuery({ name: 'id', required: false })

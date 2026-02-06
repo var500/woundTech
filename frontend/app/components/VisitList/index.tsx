@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Card } from "../card";
 import { Button } from "../button";
+import { VisitDateFilter, type DateFilterOption } from "../VisitDateFilter";
 import { getErrorMessage } from "~/utils/helper";
 import { visitsService, type Visit } from "~/utils/api";
 import type { PaginationMetadata } from "~/utils/visitsService";
@@ -24,6 +25,8 @@ export const VisitList = ({
   viewType = "clinician",
   pagination,
   onPageChange,
+  dateFilter,
+  onDateFilterChange,
 }: {
   visits: Visit[];
   loading: boolean;
@@ -31,6 +34,8 @@ export const VisitList = ({
   viewType?: "clinician" | "patient";
   pagination?: PaginationMetadata;
   onPageChange?: (page: number) => void;
+  dateFilter?: DateFilterOption;
+  onDateFilterChange?: (filter: DateFilterOption) => void;
 }) => {
   const [error, setError] = useState<string | null>(null);
 
@@ -43,20 +48,46 @@ export const VisitList = ({
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200">
-        <Activity className="w-10 h-10 text-teal-500 animate-spin mb-4" />
-        <p className="text-gray-500 font-medium">
-          Fetching your appointments...
-        </p>
+      <div className="space-y-4 w-full">
+        {/* Date Filter Component - Always visible */}
+        {dateFilter && onDateFilterChange && (
+          <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+            <VisitDateFilter
+              selectedFilter={dateFilter}
+              onFilterChange={onDateFilterChange}
+            />
+          </div>
+        )}
+        <div className="flex flex-col items-center justify-center py-20 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200">
+          <Activity className="w-10 h-10 text-teal-500 animate-spin mb-4" />
+          <p className="text-gray-500 font-medium">
+            Fetching your appointments...
+          </p>
+        </div>
       </div>
     );
   }
 
-  if (visits.length === 0) {
+  if (displayVisits.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200">
-        <FileText className="w-12 h-12 text-gray-300 mb-4" />
-        <p className="text-gray-500 font-medium">No visits scheduled yet.</p>
+      <div className="space-y-4 w-full">
+        {/* Date Filter Component - Always visible */}
+        {dateFilter && onDateFilterChange && (
+          <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+            <VisitDateFilter
+              selectedFilter={dateFilter}
+              onFilterChange={onDateFilterChange}
+            />
+          </div>
+        )}
+        <div className="flex flex-col items-center justify-center py-20 bg-gray-50/50 rounded-2xl border-2 border-dashed border-gray-200">
+          <FileText className="w-12 h-12 text-gray-300 mb-4" />
+          <p className="text-gray-500 font-medium">
+            {dateFilter && dateFilter !== "all"
+              ? "No visits found for this date range."
+              : "No visits scheduled yet."}
+          </p>
+        </div>
       </div>
     );
   }
@@ -66,6 +97,16 @@ export const VisitList = ({
       {error && (
         <div className="p-4 bg-red-50 text-red-700 rounded-xl border border-red-100 text-sm flex items-center gap-2">
           <span className="font-bold">Error:</span> {error}
+        </div>
+      )}
+
+      {/* Date Filter Component */}
+      {dateFilter && onDateFilterChange && (
+        <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+          <VisitDateFilter
+            selectedFilter={dateFilter}
+            onFilterChange={onDateFilterChange}
+          />
         </div>
       )}
 

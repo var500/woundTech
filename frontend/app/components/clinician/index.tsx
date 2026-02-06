@@ -12,6 +12,8 @@ export const Clinician = () => {
     visits,
     pagination,
     loadingVisits,
+    dateFilter,
+    setDateFilter,
     refetch: fetchVisits,
     goToPage,
   } = useFetchVisits();
@@ -70,6 +72,8 @@ export const Clinician = () => {
             viewType="clinician"
             pagination={pagination}
             onPageChange={goToPage}
+            dateFilter={dateFilter}
+            onDateFilterChange={setDateFilter}
           />
         </div>
       </div>

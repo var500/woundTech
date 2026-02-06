@@ -1,12 +1,15 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth, visitsService, type Visit } from "~/utils/api";
 import type { PaginationMetadata } from "~/utils/visitsService";
+import type { DateFilterOption } from "~/components/VisitDateFilter";
+import { filterVisitsByDateRange } from "~/components/VisitDateFilter";
 import { getErrorMessage } from "~/utils/helper";
 
 export const useFetchVisits = (itemsPerPage: number = 10) => {
   const { user: authUser } = useAuth();
 
   const [visits, setVisits] = useState<Visit[]>([]);
+  const [dateFilter, setDateFilter] = useState<DateFilterOption>("all");
   const [pagination, setPagination] = useState<PaginationMetadata>({
     total: 0,
     page: 1,
@@ -56,23 +59,50 @@ export const useFetchVisits = (itemsPerPage: number = 10) => {
     [fetchVisits],
   );
 
-  const goToNextPage = useCallback(() => {
-    if (pagination.hasNextPage) {
-      goToPage(pagination.page + 1);
+  const filteredVisits = filterVisitsByDateRange(visits, dateFilter);
+
+  // Calculate effective pagination based on filtered results
+  const effectivePagination: PaginationMetadata = useMemo(() => {
+    if (dateFilter === "all") {
+      // Use API pagination when no filter is applied
+      return pagination;
     }
-  }, [pagination, goToPage]);
+
+    // When filter is applied, calculate pagination based on filtered results
+    const totalFiltered = filteredVisits.length;
+    const totalPages = Math.ceil(totalFiltered / itemsPerPage);
+    const currentPage = 1; // Reset to page 1 when filtering
+
+    return {
+      total: totalFiltered,
+      page: currentPage,
+      limit: itemsPerPage,
+      totalPages,
+      hasNextPage: currentPage < totalPages,
+      hasPreviousPage: currentPage > 1,
+    };
+  }, [filteredVisits.length, dateFilter, pagination, itemsPerPage]);
+
+  const goToNextPage = useCallback(() => {
+    if (effectivePagination.hasNextPage) {
+      goToPage(effectivePagination.page + 1);
+    }
+  }, [effectivePagination, goToPage]);
 
   const goToPreviousPage = useCallback(() => {
-    if (pagination.hasPreviousPage) {
-      goToPage(pagination.page - 1);
+    if (effectivePagination.hasPreviousPage) {
+      goToPage(effectivePagination.page - 1);
     }
-  }, [pagination, goToPage]);
+  }, [effectivePagination, goToPage]);
 
   return {
-    visits,
-    pagination,
+    visits: filteredVisits,
+    allVisits: visits,
+    pagination: effectivePagination,
     loadingVisits,
     error,
+    dateFilter,
+    setDateFilter,
     refetch: fetchVisits,
     goToPage,
     goToNextPage,
