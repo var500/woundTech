@@ -4,7 +4,7 @@
 
 #### Environment Setup:
 
-`.env` file already has:
+`.env` file for frontend has:
 
 ```
 
