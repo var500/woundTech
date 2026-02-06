@@ -2,15 +2,17 @@ import { Activity, LogOut, Menu, X } from "lucide-react";
 import { Button } from "../button";
 import { useAuth } from "~/utils/useAuth";
 import { useState } from "react";
+import { useNavigate } from "react-router";
 
 export const Navbar = () => {
   const { user: authUser, logout: apiLogout } = useAuth();
-
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogout = () => {
     apiLogout();
     setMobileMenuOpen(false);
+    navigate("/", { replace: true });
   };
 
   return (

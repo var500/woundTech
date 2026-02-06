@@ -20,6 +20,7 @@ export const useFetchVisits = () => {
       setError(null);
 
       const data = await visitsService.getCurrentUserVisits();
+      console.log("Fetched visits:", data);
       setVisits(data);
     } catch (err) {
       setError(getErrorMessage(err));

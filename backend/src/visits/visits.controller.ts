@@ -3,7 +3,7 @@ import { RoleCategories } from 'src/common/enum';
 import { Roles } from 'src/guards/roles';
 import { VisitsService } from './visits.service';
 import { ScheduleVisitDTO } from './dtos/schedule-visit.dto';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Visits')
 @Controller('visits')
@@ -11,8 +11,7 @@ export class VisitsController {
   constructor(private readonly visitsService: VisitsService) {}
 
   @Roles(RoleCategories.ClinicianAndPatient)
-  @ApiQuery({ name: 'id', required: true })
-  @Get('/:userId')
+  @Get()
   async getVisits(@Query('userId') userId: string) {
     return await this.visitsService.getVisits(userId);
   }

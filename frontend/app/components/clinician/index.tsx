@@ -1,12 +1,14 @@
 import { NewVisitForm } from "../Forms/newVisitForm";
 
-import { Calendar } from "lucide-react";
+import { Calendar, RefreshCcw } from "lucide-react";
 import { useFetchAllUsers } from "~/hooks/use-fetch-users";
 import { useFetchVisits } from "~/hooks/use-fetch-visits";
 import { VisitList } from "../VisitList";
+import { Button } from "../button";
+
 export const Clinician = () => {
-  const { patients, loadingUsers, refetch: fetchAllUsers } = useFetchAllUsers();
-  const { visits } = useFetchVisits();
+  const { loadingUsers, refetch: fetchAllUsers } = useFetchAllUsers();
+  const { visits, loadingVisits, refetch: fetchVisits } = useFetchVisits();
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -18,16 +20,17 @@ export const Clinician = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Col: Form */}
         <div className="lg:col-span-1">
-          <div className="sticky top-24">
-            {patients.length === 0 && !loadingUsers && (
-              <button
-                onClick={fetchAllUsers}
-                className="mb-4 w-full px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700"
-              >
+          <div className="sticky top-24 ">
+            {!loadingUsers ? (
+              <Button className="w-full mb-4" onClick={fetchAllUsers}>
                 Load Patients
-              </button>
+              </Button>
+            ) : (
+              <Button className="w-full mb-4" disabled>
+                Fetching Patient List
+              </Button>
             )}
-            <NewVisitForm />
+            <NewVisitForm onVisitCreated={fetchVisits} />
           </div>
         </div>
 
@@ -37,11 +40,28 @@ export const Clinician = () => {
             <h3 className="font-semibold text-gray-700 flex items-center gap-2">
               <Calendar className="w-4 h-4" /> Your Visits
             </h3>
-            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-              {visits.length} records
-            </span>
+            <div className="flex items-center gap-2">
+              {/* Spinner for the refresh icon */}
+              <button
+                onClick={fetchVisits}
+                disabled={loadingVisits}
+                className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed p-1 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <RefreshCcw
+                  className={`w-4 h-4 ${loadingVisits ? "animate-spin text-teal-600" : "text-gray-500"}`}
+                />
+              </button>
+
+              <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                {visits.length} records
+              </span>
+            </div>
           </div>
-          <VisitList />
+          <VisitList
+            visits={visits}
+            loading={loadingVisits}
+            onRefresh={fetchVisits}
+          />
         </div>
       </div>
     </div>

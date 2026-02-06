@@ -30,7 +30,7 @@ export class VisitsService {
   ) {}
 
   async getVisits(userId: string) {
-    if (!userId?.trim()) {
+    if (!userId) {
       throw new BadRequestException(Messages.User_id_missing);
     }
 
@@ -40,7 +40,16 @@ export class VisitsService {
       if (patient) {
         return this.visitsModel.findAll({
           where: { patient_id: userId },
-          attributes: ['id', 'notes', 'createdAt', 'updatedAt'],
+          attributes: [
+            'id',
+            'notes',
+            'createdAt',
+            'updatedAt',
+            'scheduled_at',
+            'status',
+            'check_in_at',
+            'check_out_at',
+          ],
           include: [
             {
               model: Clinician,
@@ -56,11 +65,28 @@ export class VisitsService {
       if (clinician) {
         return this.visitsModel.findAll({
           where: { clinician_id: userId },
-          attributes: ['id', 'notes', 'createdAt', 'updatedAt'],
+          attributes: [
+            'id',
+            'notes',
+            'createdAt',
+            'updatedAt',
+            'scheduled_at',
+            'status',
+            'check_in_at',
+            'check_out_at',
+          ],
           include: [
             {
               model: Patient,
-              attributes: ['id', 'fname', 'lname', 'dob', 'email', 'avatar'],
+              attributes: [
+                'id',
+                'fname',
+                'lname',
+                'dob',
+                'email',
+                'avatar',
+                'mobile',
+              ],
             },
           ],
           order: [['createdAt', 'DESC']],
@@ -78,7 +104,7 @@ export class VisitsService {
   }
 
   async register(body: ScheduleVisitDTO) {
-    const { patient_id, clinician_id, scheduled_at } = body;
+    const { patient_id, clinician_id, scheduled_at, notes } = body;
 
     const patient = await this.patientModel.findByPk(patient_id);
     if (!patient) throw new BadRequestException('Patient not found');
@@ -149,6 +175,7 @@ export class VisitsService {
       clinician_id,
       scheduled_at: visitDate,
       status: VisitStatus.SCHEDULED,
+      notes,
     });
   }
 

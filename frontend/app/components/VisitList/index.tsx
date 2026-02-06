@@ -3,12 +3,19 @@ import { Card } from "../card";
 import { Button } from "../button";
 import { getErrorMessage } from "~/utils/helper";
 import { useFetchVisits } from "~/hooks/use-fetch-visits";
-import { visitsService } from "~/utils/api";
+import { visitsService, type Visit } from "~/utils/api";
 import { useMemo, useState } from "react";
 import { VisitStatus } from "~/common/enum";
 
-export const VisitList = () => {
-  const { visits, loadingVisits, refetch: fetchVisits } = useFetchVisits();
+export const VisitList = ({
+  visits,
+  loading,
+  onRefresh,
+}: {
+  visits: Visit[];
+  loading: boolean;
+  onRefresh: () => void;
+}) => {
   const [error, setError] = useState<string | null>(null);
 
   const displayVisits = useMemo(() => {
@@ -18,7 +25,7 @@ export const VisitList = () => {
     );
   }, [visits]);
 
-  if (loadingVisits) {
+  if (loading) {
     return (
       <div className="text-center py-12 bg-white rounded-xl border border-dashed border-gray-300">
         <Activity className="w-12 h-12 text-gray-300 mx-auto mb-3 animate-spin" />
@@ -67,7 +74,7 @@ export const VisitList = () => {
                       onClick={async () => {
                         try {
                           await visitsService.checkIn(visit.id);
-                          await fetchVisits();
+                          await onRefresh();
                         } catch (err) {
                           setError(getErrorMessage(err));
                         }
@@ -84,7 +91,7 @@ export const VisitList = () => {
                     onClick={async () => {
                       try {
                         await visitsService.checkOut(visit.id);
-                        await fetchVisits();
+                        await onRefresh();
                       } catch (err) {
                         setError(getErrorMessage(err));
                       }

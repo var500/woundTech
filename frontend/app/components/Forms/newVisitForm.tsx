@@ -9,7 +9,11 @@ import { getErrorMessage } from "~/utils/helper";
 import { useFetchVisits } from "~/hooks/use-fetch-visits";
 import { useFetchAllUsers } from "~/hooks/use-fetch-users";
 
-export const NewVisitForm = () => {
+export const NewVisitForm = ({
+  onVisitCreated,
+}: {
+  onVisitCreated: () => void;
+}) => {
   const { user: authUser } = useAuth();
   const [patientId, setPatientId] = useState("");
   const [scheduledDateTime, setScheduledDateTime] = useState(
@@ -21,7 +25,6 @@ export const NewVisitForm = () => {
 
   const { loadingUsers } = useFetchAllUsers();
 
-  const { refetch: fetchVisits } = useFetchVisits();
   const { patients } = useFetchAllUsers();
 
   const handleSubmit = async (e: any) => {
@@ -31,7 +34,6 @@ export const NewVisitForm = () => {
       setFormError(null);
 
       const timestamp = new Date(scheduledDateTime).getTime().toString();
-
       await visitsService.scheduleVisit({
         clinician_id: authUser!.id,
         patient_id: patientId,
@@ -39,8 +41,7 @@ export const NewVisitForm = () => {
         notes,
       });
 
-      await fetchVisits();
-      // onSuccess();
+      await onVisitCreated();
 
       setPatientId("");
       setScheduledDateTime(new Date().toISOString().split("T")[0]);

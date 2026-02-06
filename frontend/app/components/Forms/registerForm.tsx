@@ -3,6 +3,7 @@ import { Button } from "../button";
 import { Input } from "../input";
 import { useAuth } from "~/utils/api";
 import { Select } from "../select";
+import { Calendar } from "lucide-react";
 
 export const RegisterForm = ({
   userType,
@@ -35,11 +36,23 @@ export const RegisterForm = ({
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
+    const payload = {
+      email,
+      password,
+      fname: firstName,
+      lname: lastName,
+      dob: dateOfBirth,
+      gender,
+      mobile,
+      city,
+      address,
+    };
+    console.log("Registering with payload:", payload);
     try {
       if (userType === "clinician") {
-        await clinicianRegister({ email, password, firstName, lastName });
+        await clinicianRegister(payload);
       } else {
-        await patientRegister({ email, password, firstName, lastName });
+        await patientRegister(payload);
       }
 
       handleSetIsRegistering(false);
@@ -67,16 +80,21 @@ export const RegisterForm = ({
         placeholder="Last name"
         required
       />
-      <Input
-        label="Date of Birth"
-        type="date"
-        value={dateOfBirth}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          setDateOfBirth(e.target.value)
-        }
-        placeholder="Enter your date of birth"
-        required
-      />
+
+      <div className="relative">
+        <Input
+          placeholder="Date of Birth"
+          label="Date of Birth"
+          type="date"
+          value={dateOfBirth}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setDateOfBirth(e.target.value)
+          }
+          required
+          className="w-full"
+        />
+        <Calendar className="absolute  right-3 top-9  w-4 h-4 pointer-events-none text-gray-500" />
+      </div>
       <Select
         label="Gender"
         value={gender}

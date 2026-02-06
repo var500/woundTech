@@ -24,9 +24,10 @@ class VisitsService {
    * Get visits for a specific user
    */
   async getVisits(userId: string): Promise<Visit[]> {
-    const response = await axiosInstance.get<Visit[]>(`/visits/${userId}`, {
-      params: { userId },
-    });
+    const response = await axiosInstance.get<Visit[]>(
+      `/visits?userId=${userId}`,
+      {},
+    );
     return response.data;
   }
 

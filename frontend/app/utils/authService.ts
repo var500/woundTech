@@ -8,8 +8,13 @@ export interface LoginRequest {
 export interface RegisterRequest {
   email: string;
   password: string;
-  firstName?: string;
-  lastName?: string;
+  fname?: string;
+  lname?: string;
+  dob?: string;
+  gender?: string;
+  mobile?: string;
+  city?: string;
+  address?: string;
 }
 
 export interface AuthResponse {

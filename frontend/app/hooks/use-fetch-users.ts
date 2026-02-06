@@ -7,7 +7,6 @@ export const useFetchAllUsers = () => {
 
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [clinicians, setClinicians] = useState<any[]>([]);
   const [patients, setPatients] = useState<any[]>([]);
 
   const fetchAllUsers = useCallback(async () => {
@@ -18,9 +17,8 @@ export const useFetchAllUsers = () => {
     try {
       setLoadingUsers(true);
       setError(null);
-      const cliniciansData = await clinicianService.getList();
       const patientsData = await patientService.getList();
-      setClinicians(cliniciansData);
+
       setPatients(patientsData);
       setError(null);
     } catch (err) {
@@ -35,7 +33,6 @@ export const useFetchAllUsers = () => {
   }, [fetchAllUsers]);
 
   return {
-    clinicians,
     patients,
     loadingUsers,
     error,
