@@ -22,7 +22,12 @@ export { default as patientService } from "./patientService";
 export type { Patient } from "./patientService";
 
 export { default as visitsService } from "./visitsService";
-export type { Visit, ScheduleVisitRequest } from "./visitsService";
+export type {
+  Visit,
+  ScheduleVisitRequest,
+  PaginationMetadata,
+  PaginatedVisitsResponse,
+} from "./visitsService";
 
 export { useAuth } from "./useAuth";
 export type { default as axiosInstance } from "./apiClient";

@@ -8,7 +8,13 @@ import { Button } from "../button";
 
 export const Clinician = () => {
   const { loadingUsers, refetch: fetchAllUsers } = useFetchAllUsers();
-  const { visits, loadingVisits, refetch: fetchVisits } = useFetchVisits();
+  const {
+    visits,
+    pagination,
+    loadingVisits,
+    refetch: fetchVisits,
+    goToPage,
+  } = useFetchVisits();
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -43,7 +49,7 @@ export const Clinician = () => {
             <div className="flex items-center gap-2">
               {/* Spinner for the refresh icon */}
               <button
-                onClick={fetchVisits}
+                onClick={() => fetchVisits(1)}
                 disabled={loadingVisits}
                 className="cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed p-1 hover:bg-gray-100 rounded-full transition-colors"
               >
@@ -53,14 +59,17 @@ export const Clinician = () => {
               </button>
 
               <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                {visits.length} records
+                {pagination?.total || 0} records
               </span>
             </div>
           </div>
           <VisitList
             visits={visits}
             loading={loadingVisits}
-            onRefresh={fetchVisits}
+            onRefresh={() => fetchVisits(1)}
+            viewType="clinician"
+            pagination={pagination}
+            onPageChange={goToPage}
           />
         </div>
       </div>

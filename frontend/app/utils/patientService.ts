@@ -3,8 +3,8 @@ import axiosInstance from "./apiClient";
 export interface Patient {
   id: string;
   email: string;
-  firstName?: string;
-  lastName?: string;
+  fname: string;
+  lname: string;
   dob?: string;
   city?: string;
   address?: string;

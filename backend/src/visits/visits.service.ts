@@ -29,16 +29,21 @@ export class VisitsService {
     private visitsModel: typeof Visit,
   ) {}
 
-  async getVisits(userId: string) {
+  async getVisits(userId: string, page: number = 1, limit: number = 10) {
     if (!userId) {
       throw new BadRequestException(Messages.User_id_missing);
     }
+
+    // Validate pagination parameters
+    const validPage = Math.max(1, page);
+    const validLimit = Math.min(Math.max(1, limit), 100);
+    const offset = (validPage - 1) * validLimit;
 
     try {
       const patient = await this.patientModel.findByPk(userId);
 
       if (patient) {
-        return this.visitsModel.findAll({
+        const { rows, count } = await this.visitsModel.findAndCountAll({
           where: { patient_id: userId },
           attributes: [
             'id',
@@ -57,13 +62,17 @@ export class VisitsService {
             },
           ],
           order: [['createdAt', 'DESC']],
+          limit: validLimit,
+          offset,
         });
+
+        return this.formatPaginatedResponse(rows, count, validPage, validLimit);
       }
 
       const clinician = await this.clinicianModel.findByPk(userId);
 
       if (clinician) {
-        return this.visitsModel.findAll({
+        const { rows, count } = await this.visitsModel.findAndCountAll({
           where: { clinician_id: userId },
           attributes: [
             'id',
@@ -90,7 +99,11 @@ export class VisitsService {
             },
           ],
           order: [['createdAt', 'DESC']],
+          limit: validLimit,
+          offset,
         });
+
+        return this.formatPaginatedResponse(rows, count, validPage, validLimit);
       }
 
       throw new BadRequestException(Messages.User_Not_Found);
@@ -101,6 +114,26 @@ export class VisitsService {
         (error as Error).message || Messages.Visit_fetch_failed,
       );
     }
+  }
+
+  private formatPaginatedResponse(
+    data: Visit[],
+    total: number,
+    page: number,
+    limit: number,
+  ) {
+    const totalPages = Math.ceil(total / limit);
+    return {
+      data,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
   }
 
   async register(body: ScheduleVisitDTO) {

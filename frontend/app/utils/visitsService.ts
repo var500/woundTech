@@ -1,4 +1,6 @@
 import axiosInstance from "./apiClient";
+import type { Clinician } from "./clinicianService";
+import type { Patient } from "./patientService";
 
 export interface Visit {
   id: string;
@@ -9,6 +11,8 @@ export interface Visit {
   clinician_id: string;
   patient_id: string;
   notes?: string;
+  patient: Patient;
+  clinician?: Clinician;
   status: "SCHEDULED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
 }
 
@@ -19,13 +23,31 @@ export interface ScheduleVisitRequest {
   notes?: string;
 }
 
+export interface PaginationMetadata {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface PaginatedVisitsResponse {
+  data: Visit[];
+  pagination: PaginationMetadata;
+}
+
 class VisitsService {
   /**
-   * Get visits for a specific user
+   * Get visits for a specific user with pagination
    */
-  async getVisits(userId: string): Promise<Visit[]> {
-    const response = await axiosInstance.get<Visit[]>(
-      `/visits?userId=${userId}`,
+  async getVisits(
+    userId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<PaginatedVisitsResponse> {
+    const response = await axiosInstance.get<PaginatedVisitsResponse>(
+      `/visits?userId=${userId}&page=${page}&limit=${limit}`,
       {},
     );
     return response.data;
@@ -60,12 +82,15 @@ class VisitsService {
   }
 
   /**
-   * Get current user's visits
+   * Get current user's visits with pagination
    */
-  async getCurrentUserVisits(): Promise<Visit[]> {
+  async getCurrentUserVisits(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<PaginatedVisitsResponse> {
     const user = this.getCurrentUser();
     if (!user?.id) throw new Error("No authenticated user found");
-    return this.getVisits(user.id);
+    return this.getVisits(user.id, page, limit);
   }
 
   /**

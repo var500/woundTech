@@ -2,7 +2,13 @@ import { useFetchVisits } from "~/hooks/use-fetch-visits";
 import { VisitList } from "../VisitList";
 
 export const Patient = () => {
-  const { visits, loadingVisits, refetch: fetchVisits } = useFetchVisits();
+  const {
+    visits,
+    pagination,
+    loadingVisits,
+    refetch: fetchVisits,
+    goToPage,
+  } = useFetchVisits();
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -12,7 +18,10 @@ export const Patient = () => {
         <VisitList
           visits={visits}
           loading={loadingVisits}
-          onRefresh={fetchVisits}
+          onRefresh={() => fetchVisits(1)}
+          viewType="patient"
+          pagination={pagination}
+          onPageChange={goToPage}
         />
       </div>
     </div>

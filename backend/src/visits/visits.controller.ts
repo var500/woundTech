@@ -12,8 +12,16 @@ export class VisitsController {
 
   @Roles(RoleCategories.ClinicianAndPatient)
   @Get()
-  async getVisits(@Query('userId') userId: string) {
-    return await this.visitsService.getVisits(userId);
+  async getVisits(
+    @Query('userId') userId: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return await this.visitsService.getVisits(
+      userId,
+      page ? parseInt(page) : 1,
+      limit ? parseInt(limit) : 10,
+    );
   }
 
   @Roles(RoleCategories.ClinicianAndPatient)
