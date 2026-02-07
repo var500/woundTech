@@ -39,6 +39,11 @@
    $ pnpm install
    ```
 
+3. Populate seed data (optional)
+   ```bash
+   pnpm run seed
+   ```
+
 ## Compile and run the project
 
 ```bash
