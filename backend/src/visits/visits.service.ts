@@ -182,7 +182,6 @@ export class VisitsService {
 
     const overlappingVisit = await this.visitsModel.findOne({
       where: {
-        patient_id,
         status: { [Op.ne]: VisitStatus.CANCELLED },
         [Op.and]: [
           {
