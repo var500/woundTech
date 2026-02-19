@@ -196,11 +196,16 @@ export class VisitsService {
             },
           },
         ],
+        [Op.or]: [{ patient_id }, { clinician_id }],
       },
     });
 
     if (overlappingVisit) {
-      throw new BadRequestException(Messages.Visit_overlapping);
+      if (overlappingVisit.patient_id === patient_id) {
+        throw new BadRequestException(Messages.Patient_overlapping);
+      } else {
+        throw new BadRequestException(Messages.Clinician_unavailable);
+      }
     }
 
     return this.visitsModel.create({

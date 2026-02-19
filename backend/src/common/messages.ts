@@ -4,6 +4,10 @@ export const Messages = {
   User_Not_Found: 'User not found',
   Patient_Not_Found: 'Patient not found',
   Patient_Already_Exists: 'Patient with this email already exists',
+  Patient_overlapping:
+    'Patient has a conflicting appointment within the 30-minute window.',
+  Clinician_unavailable:
+    'Clinician has a conflicting appointment within the 30-minute window.',
   Clinician_Already_Exists: 'Clinician with this email already exists',
   Clinician_Not_Found: 'Clinician not found',
   Query_Empty: 'Query object is empty',
